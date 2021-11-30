@@ -1,10 +1,20 @@
 from django.shortcuts import render, redirect
 from .models import Todo
 from .forms import TodoAddForm
+from django.views.generic.edit import UpdateView
 # Create your views here.
 def indexView(request):
-    tasks = Todo.objects.all()
-    return render(request, "index.html", {"tasks":tasks})
+    todos = Todo.objects.filter(done=False)
+    doned_todos = Todo.objects.filter(done=True)
+    return render(request, "index.html", {"tasks":todos, "doned_todos":doned_todos})
+
+def doneTodo(request, todo_id):
+    todo = Todo.objects.get(id=todo_id)
+    todo.done = True
+    todo.save()
+    if todo:
+        return redirect("/")
+    return render(request, 'index.html')
 
 def createTodo(request):
     if request.method == "POST":
@@ -15,3 +25,19 @@ def createTodo(request):
     else:
         form = TodoAddForm()
     return render(request, "todo.html", {"form":form})
+
+def deleteTodo(request, todo_id):
+    todo = Todo.objects.get(id=todo_id)
+    todo.delete()
+    return redirect("/")
+
+def deleteAllDonedTodos(request):
+    doned_todos = Todo.objects.filter(done=True)
+    doned_todos.delete()
+    return redirect("/")
+
+class UpdateTodoView(UpdateView):
+    model = Todo
+    fields = ['title', 'text', 'priority']
+    template_name = 'todo.html'
+    success_url = '/'
