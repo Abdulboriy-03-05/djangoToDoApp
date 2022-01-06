@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from .models import Todo
 from .forms import TodoAddForm
 from django.views.generic.edit import UpdateView
+from django.db.models import Q
 # Create your views here.
 def indexView(request):
     todos = Todo.objects.filter(done=False)
@@ -41,3 +43,13 @@ class UpdateTodoView(UpdateView):
     fields = ['title', 'text', 'priority']
     template_name = 'todo.html'
     success_url = '/'
+
+import json
+def search(request):
+    d = json.loads(request.GET["data"])
+    print(d)
+    obj = list(Todo.objects.filter(
+    Q(title__icontains=d) | Q(text__icontains=d)).values())
+    data = {}
+    data["data"] = obj
+    return JsonResponse(data)
