@@ -54,9 +54,3 @@ def search(request):
     data["data"] = obj
     return JsonResponse(data)
 
-
-Paypoqni Juftni 10 руб. 50 коп
-Boglam (12 juft) narxi 102 руб. 50 коп.
-Quti (12 boglam) narxi 1140 руб.
-
-User kiritgan juft ga qarab narxini chiqarib bering
