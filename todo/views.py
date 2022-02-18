@@ -33,10 +33,12 @@ def deleteTodo(request, todo_id):
     todo.delete()
     return redirect("/")
 
+
 def deleteAllDonedTodos(request):
     doned_todos = Todo.objects.filter(done=True)
     doned_todos.delete()
     return redirect("/")
+
 
 class UpdateTodoView(UpdateView):
     model = Todo
